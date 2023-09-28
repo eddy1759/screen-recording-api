@@ -1,5 +1,5 @@
 const httpStatus = require('http-status');
-const config = require('../config/auth');
+const config = require('../config/config');
 const logger = require('../config/logger');
 const ApiError = require('../utils/ApiError');
 

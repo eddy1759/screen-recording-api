@@ -1,7 +1,7 @@
-const app = require('./app');
-const config = require('./config/auth');
+const app = require('../app');
+const config = require('../config/config');
 const http = require('http');
-const logger = require('./config/logger');
+const logger = require('../config/logger');
 var debug = require('debug')('screen-recording-api:server');
 
 const httpServer = http.createServer(app);
@@ -90,7 +90,7 @@ function onListening() {
         ? 'pipe ' + addr
         : 'port ' + addr.port;
     debug('Listening on ' + bind);
-    logger.info(`Listening on ${bind}`);
+    // logger.info(`Listening on ${bind}`);
 };
 
 httpServer.listen(config.port, () => {

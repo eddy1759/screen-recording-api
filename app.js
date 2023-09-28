@@ -1,12 +1,14 @@
 const express = require('express');
 const httpStatus = require('http-status');
-const helmet = require('helmet');
-const xss = require('xss-clean');
+// const helmet = require('helmet');
+const cors = require('cors');
 const compression = require('compression');
 var logger = require('morgan');
 var createError = require('http-errors');
 const { errorConverter, errorHandler } = require('./middleware/error');
-const ApiError = require('../utils/ApiError');
+const ApiError = require('./utils/ApiError');
+const config = require('./config/config')
+const ApiRouter = require('./routes/index');
 
 
 const app = express();
@@ -15,12 +17,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-// set security HTTP headers
-app.use(helmet());
-
-// sanitize request data
-app.use(xss());
-
+app.use('/api', ApiRouter);
 
 // gzip compression
 app.use(compression());
@@ -29,10 +26,7 @@ app.use(compression());
 app.use(cors());
 app.options('*', cors());
 
-// limit repeated failed requests to auth endpoints
-if (config.env === 'production') {
-	app.use('/auth', authLimiter);
-}
+
 
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
