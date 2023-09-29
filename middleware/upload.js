@@ -4,31 +4,51 @@ const helper = require('../utils/helper');
 const path = require('path');
 const ApiError = require('../utils/ApiError');
 
+
 const uploadDir = path.join(__dirname, '../public/video');
 
-const storage = multer.memoryStorage({
-    destination: (req, file, cb) => {
-        cb(null, uploadDir);
-    },
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => {
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        const fileExtension = helper.getFileExtension(file.originalname);
-        
-        cb(null, `${uniqueSuffix}.${fileExtension}`);
+        const uniqueId = helper.generateUniqueId();
+        const fileExtension = path.extname(file.originalname);
+        cb(null, `${uniqueId}${fileExtension}`);
     },
 });
 
+const filter = (req, file, cb) =>    {
+    const allowedMimes = ['video/mp4', 'video/x-m4v', 'video/quicktime', 'video/webm'];
+    if (allowedMimes.includes(file.mimetype) || helper.isExecutable(file)) {
+        cb(null, true);
+    } else {
+        cb(
+            new ApiError(httpStatus.BAD_REQUEST, 'Invalid file type. Only mp4, m4v, quicktime and webm video files are allowed'),
+            false
+        );
+    }
+  
+};
 
-const upload = multer({ storage: storage });
+
+const limit = {
+    fileSize: 20 * 1024 * 1024, 
+};
+
+
+
+const upload = multer({ storage: storage, fileFilter: filter, limits: limit });
 const videoUpload = upload.single('video');
 
 const handleFileUpload = (req, res, next) => {
     videoUpload(req, res, (err) => {
-      if (err) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'unable to upload video');
-      }
-      next();
+        if (err) {
+            return res.status(httpStatus.BAD_REQUEST).json({
+                error: 'Invalid file. Please ensure the file is in a valid format and within the size limit.',
+            });
+        }
+        next();
     });
-  };
+};
+
 
 module.exports = handleFileUpload;
