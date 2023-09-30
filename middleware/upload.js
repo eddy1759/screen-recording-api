@@ -53,5 +53,4 @@ const handleFileUpload = (req, res, next) => {
 
 module.exports = {
     handleFileUpload, 
-    uniqueId,
 };
