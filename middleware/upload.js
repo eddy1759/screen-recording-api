@@ -6,11 +6,11 @@ const ApiError = require('../utils/ApiError');
 
 
 const uploadDir = path.join(__dirname, '../public/video');
+const uniqueId = helper.generateUniqueId();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => {
-        const uniqueId = helper.generateUniqueId();
         const fileExtension = path.extname(file.originalname);
         cb(null, `${uniqueId}${fileExtension}`);
     },
@@ -31,7 +31,7 @@ const filter = (req, file, cb) =>    {
 
 
 const limit = {
-    fileSize: 20 * 1024 * 1024, 
+    fileSize: 50 * 1024 * 1024, 
 };
 
 
@@ -51,4 +51,7 @@ const handleFileUpload = (req, res, next) => {
 };
 
 
-module.exports = handleFileUpload;
+module.exports = {
+    handleFileUpload, 
+    uniqueId,
+};

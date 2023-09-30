@@ -1,57 +1,32 @@
 const express = require('express');
 const httpStatus = require('http-status');
-// const helmet = require('helmet');
 const cors = require('cors');
-const compression = require('compression');
-var logger = require('morgan');
-var createError = require('http-errors');
+const createError = require('http-errors');
 const { errorConverter, errorHandler } = require('./middleware/error');
-const ApiError = require('./utils/ApiError');
-const config = require('./config/config')
 const ApiRouter = require('./routes/index');
-
 
 const app = express();
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-
-app.use('/api', ApiRouter);
-
-// gzip compression
-app.use(compression());
-
-// enable cors
+// CORS middleware (before defining routes)
 app.use(cors());
 app.options('*', cors());
 
+// Parse JSON and URL-encoded bodies
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
+// Define your routes
+app.use('/api', ApiRouter);
 
-// send back a 404 error for any unknown api request
+// Error handling middleware (after defining routes)
 app.use((req, res, next) => {
-	next(new ApiError(httpStatus.NOT_FOUND, 'Not found'));
+    next(createError(httpStatus.NOT_FOUND, 'Not found'));
 });
 
-// convert error to ApiError, if needed
+// Convert errors to ApiError
 app.use(errorConverter);
 
-// handle error
+// Handle errors
 app.use(errorHandler);
-
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-	next(createError(404));
-});
-
-// error handler
-app.use(function (err, req, res, next) {
-	// set locals, only providing error in development
-	res.locals.message = err.message;
-	res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-	// render the error page
-	res.status(err.status || 500).end();
-});
 
 module.exports = app;
