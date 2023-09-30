@@ -7,10 +7,8 @@ const fs = require('fs');
 const { generateUniqueId } = require('../utils/helper');
 
 const uploadVideoController = Asyncly(async (req, res) => {
-    const { videoFile } = req.body;
-
-    if (!videoFile) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Video file is required');
+    if (!req.body) {
+        throw new ApiError(httpStatus.BAD_REQUEST, 'Request body is empty');
     }
     const videoFileName = await generateUniqueId();
 

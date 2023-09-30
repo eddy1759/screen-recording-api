@@ -6,7 +6,7 @@ const httpStatus = require('http-status');
 function generateUniqueId() {
     const formattedDateTime = moment().format('YYMMDD');
     const uniqueId = Math.random().toString(36).substring(7);
-    return `${formattedDateTime}_${uniqueId}.mp4`;
+    return `${formattedDateTime}_${uniqueId}.webm`;
 }
 
 const Asyncly = (fn) => (req, res, next) => {

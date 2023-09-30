@@ -6,18 +6,18 @@ const ApiError = require('../utils/ApiError');
 
 
 const uploadDir = path.join(__dirname, '../public/video');
-const uniqueId = helper.generateUniqueId();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => cb(null, uploadDir),
     filename: (req, file, cb) => {
         const fileExtension = path.extname(file.originalname);
-        cb(null, `${uniqueId}${fileExtension}`);
+        const id = helper.generateUniqueId();
+        cb(null, `${id}${fileExtension}`);
     },
 });
 
 const filter = (req, file, cb) =>    {
-    const allowedMimes = ['video/mp4', 'video/x-m4v', 'video/quicktime', 'video/webm'];
+    const allowedMimes = ['video/mp4', 'video/webm'];
     if (allowedMimes.includes(file.mimetype) || helper.isExecutable(file)) {
         cb(null, true);
     } else {
