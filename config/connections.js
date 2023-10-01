@@ -1,8 +1,9 @@
 const mongoose = require("mongoose");
 const { Agenda } = require("@hokify/agenda");
-const OpenAI = require("openai");
+// const OpenAI = require("openai");
+const { Deepgram } = require("@deepgram/sdk");
 const config = require("./config");
-const logger = require("./logger");
+
 
 const databaseConnection = () => {
     // mongoose.set('strictQuery', false)
@@ -24,14 +25,17 @@ const agenda = new Agenda({
     },
 });
 
-const openai = new OpenAI({
-    apiKey: config.OPENAI_KEY,
-});
+const deepgramService = new DeepgramService(config.deepgramApiKey);
+
+// const openai = new OpenAI({
+//     apiKey: config.OPENAI_KEY,
+// });
 
 module.exports = {
     databaseConnection,
     agenda,
-    openai,
+    deepgramService,
+    // openai,
 };
 
 

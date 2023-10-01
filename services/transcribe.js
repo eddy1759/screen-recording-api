@@ -1,39 +1,41 @@
 const fs = require("fs");
 const path = require("path");
 const VideoModel = require("../model/video.model");
-const openai = require("../config/connections");
 const logger = require("../config/logger");
 
-async function transcribeAudio(audioOutput, videoId) {
+async function transcribeAudio(filePath, videoId) {
+  if (!fs.existsSync(filePath)) {
+    return logger.info(`Audio output ${audioOutput} not found`);
+
+  };
+  const source = {
+    buffer: fs.readFileSync(filePath),
+    mimetype: "video/webm",
+  };
   try {
-    if (!fs.existsSync(audioOutput)) {
-        return logger.info(`Audio output ${audioOutput} not found`);
-    
-    }
-    const transcript = await openai.audio.transcriptions.create({
-      file: fs.createReadStream(audioOutput),
-      model: "whisper-1",
-    });
+    const { results } = await deepgramService.transcription.preRecorded(
+      source,
+      {
+        smart_format: true,
+        model: "nova",
+      }
+    );
+    const transcribed = results?.channels[0].alternatives[0].transcript ?? null;
 
     // update transcript in the database
     const videoExists = await Video.findOne({
-        videoId: videoId,
+      videoId: videoId,
     });
-
     if (videoExists) {
       const filter = { videoId: videoId };
-      const update = { transcript: transcript?.text };
-      await Video.findOneAndUpdate(filter, update);
-
-      logger.info("Successfully Transcribed");
-    } else {
-      console.log("Failed updating transcript, Video doesn't exist.");
+      const update = { transcript: transcribed };
+      await VideoModel.findOneAndUpdate(filter, update);
+      logger.info("Successfully updated transcript");
     }
   } catch (error) {
-    logger.error('Error Transcribing Audio to Text: ', error);
+    logger.error("Error Transcribing Audio to Text: ", error);
   }
-}
-
+};
 
 async function ProcessScreenRecordingVideos(videoId) {
   const input = path.join(__dirname, "..", "storage/videos", `${videoId}.webm`);

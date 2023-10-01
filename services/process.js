@@ -4,7 +4,7 @@ const logger = require("../config/logger");
 
 async function processVideoJob(job, done) {
   try {
-    const { videoId } = job.attrs.data;
+    const { videoPath, videoId } = job.attrs.data;
     await ProcessScreenRecordingVideos(videoId);
     done();
   } catch (error) {
