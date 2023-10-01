@@ -5,17 +5,17 @@ const config = require("./config");
 const logger = require("./logger");
 
 const databaseConnection = () => {
-    mongoose.set('strictQuery', false)
+    // mongoose.set('strictQuery', false)
 
     mongoose.connect(config.DB_URL);
 
-    mongoose.connection.on("connected", () => {
-        logger.info("Database connected successfully")
-    })
+    // mongoose.connection.on("connected", () => {
+    //     logger.info("Database connected successfully")
+    // })
 
-    mongoose.connection.on("error", (error) => {
-        logger.error("An error occurred", error)
-    })
+    // mongoose.connection.on("error", (error) => {
+    //     logger.error("An error occurred", error)
+    // })
 };
 
 const agenda = new Agenda({
