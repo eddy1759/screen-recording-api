@@ -2,7 +2,7 @@ const moment = require('moment');
 const fs = require('fs');
 const httpStatus = require('http-status');
 const logger = require('../config/logger');
-const VideoModel = require('../models/video.model');
+const VideoModel = require('../model/video.model');
 
 function generateUniqueId() {
     const formattedDateTime = moment().format('YYMMDD');

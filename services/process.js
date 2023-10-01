@@ -1,13 +1,6 @@
-const { Agenda } = require("@hokify/agenda");
-const config = require("../config/config");
-const { ProcessScreenRecordingVideos } = require("../helper/video");
+const { agenda } = require("../config/connections");
+const { ProcessScreenRecordingVideos } = require("./transcribe");
 const logger = require("../config/logger");
-
-const agenda = new Agenda({
-  db: {
-    address: config.AGENDA_MONGO_URL,
-  },
-});
 
 async function processVideoJob(job, done) {
   try {

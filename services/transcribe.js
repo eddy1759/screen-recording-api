@@ -1,9 +1,7 @@
-const openai = require("../config/openai");
 const fs = require("fs");
 const path = require("path");
-const Video = require("../model/Video");
-const { createFile, deleteFile } = require("./file-manager");
-const { sleep } = require("./");
+const VideoModel = require("../model/video.model");
+const openai = require("../config/connections");
 const logger = require("../config/logger");
 
 async function transcribeAudio(audioOutput, videoId) {

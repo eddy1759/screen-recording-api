@@ -7,5 +7,5 @@ module.exports = {
     DB_URL: process.env.MONGO_DB,
     AGENDA_URL: process.env.AGENDA_MONGO_URL,
     BASE_URL: process.env.BASE_URL,
-    OPENAI_KEY: process.env.OPENAI_KEY,
+    OPENAI_KEY: process.env.OPENAI_APIkEY,
 };

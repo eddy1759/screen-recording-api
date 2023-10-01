@@ -3,7 +3,7 @@ const path = require('path');
 const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const config = require('../config/config');
-const VideoModel = require('../models/video.model');
+const VideoModel = require('../model/video.model');
 const { Asyncly, createFile, deleteFile, generateUniqueId, checkIfVideoExists, 
     setContentDisposition, handleRangeRequest,handleFullContent 
 } = require('../utils/helper');
@@ -150,7 +150,7 @@ const getVideoById = Asyncly (async (req, res) => {
         message: "Succesfully gotten video file",
         data: {
             id: videoExists.videoId,
-            videoPath: `${config.BASE_URL}/media/files/${videoExists?.vId}.webm`,
+            videoPath: `${config.BASE_URL}/media/files/${videoExists?.videoId}.webm`,
             transcript: videoExists.transcript,
             createAt: videoExists.createdAt,
         },
