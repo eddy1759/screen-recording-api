@@ -1,7 +1,8 @@
 const moment = require('moment');
-const path = require('path');
 const fs = require('fs');
 const httpStatus = require('http-status');
+const logger = require('../config/logger');
+const VideoModel = require('../models/video.model');
 
 function generateUniqueId() {
     const formattedDateTime = moment().format('YYMMDD');
@@ -45,7 +46,38 @@ const handleFullContent = (req, res, videoPath) => {
 
     const fileStream = fs.createReadStream(videoPath);
     fileStream.pipe(res);
-}
+};
+
+function createFile(destPath, fileName, content) {
+    try {
+      if (!fs.existsSync(destPath)) {
+        logger.error(`Failed to create file, destination path doesn't exist.`);
+        return false;
+      }
+      const file = `${destPath}/${fileName}`;
+      fs.writeFileSync(file, content);
+      return true;
+    } catch (e) {
+        logger.error(`Failed to create file: ${e.message}`);
+        return false;
+    }
+};
+
+function deleteFile(file) {
+    if (!fs.existsSync(file)) {
+        logger.info(`Failed to delete file: ${file}`);
+    } else {
+      fs.unlinkSync(file);
+    }
+  }
+
+const checkIfVideoExists = async (videoId) => {
+    const video = await VideoModel.findOne({ videoId });
+    if (video) {
+        return true;
+    }
+    return false;
+};
 
 module.exports = {
     generateUniqueId,
@@ -53,4 +85,7 @@ module.exports = {
     setContentDisposition,
     handleRangeRequest,
     handleFullContent,
+    createFile,
+    deleteFile,
+    checkIfVideoExists,
 };

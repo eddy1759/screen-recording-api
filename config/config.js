@@ -4,6 +4,8 @@ require('dotenv').config({ path: path.join(__dirname, '../.env') });
 module.exports = {
     env: process.env.NODE_ENV,
     port: process.env.PORT,
-    DB_URL: process.env.DB_URL,
-    CLOUDINARY_URL: process.env.CLOUDINARY_URL,
+    DB_URL: process.env.MONGO_DB,
+    AGENDA_URL: process.env.AGENDA_MONGO_URL,
+    BASE_URL: process.env.BASE_URL,
+    OPENAI_KEY: process.env.OPENAI_KEY,
 };
