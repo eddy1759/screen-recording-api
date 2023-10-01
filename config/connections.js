@@ -4,18 +4,18 @@ const OpenAI = require("openai");
 const config = require("./config");
 const logger = require("./logger");
 
-const databaseConnection = async () => {
-    mongoose.set('strictQuery', false)
+const databaseConnection = () => {
+    // mongoose.set('strictQuery', false)
 
-    await mongoose.connect(config.DB_URL);
+    mongoose.connect(config.DB_URL);
 
-    mongoose.connection.on("connected", () => {
-        logger.info("Database connected successfully")
-    })
+    // mongoose.connection.on("connected", () => {
+    //     logger.info("Database connected successfully")
+    // })
 
-    mongoose.connection.on("error", (error) => {
-        logger.error("An error occurred", error)
-    })
+    // mongoose.connection.on("error", (error) => {
+    //     logger.error("An error occurred", error)
+    // })
 };
 
 const agenda = new Agenda({
