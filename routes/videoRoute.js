@@ -9,8 +9,8 @@ const router = express.Router();
 router.post( "/start", handleFileUpload, videoController.startVideoStream );
 router.get("/end/:videoId", videoController.stopVideoStream);
 router.get("/:id", videoController.getVideoById);
-router.get("/videos", videoController.getAllVideos);
+router.get("/", videoController.getAllVideos);
 
-router.get('stream/:id', videoController.getUploadedVideosController);
+router.get('/stream/:id', videoController.getUploadedVideosController);
 
 module.exports = router; 
