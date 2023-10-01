@@ -9,13 +9,13 @@ const databaseConnection = () => {
 
     mongoose.connect(config.DB_URL);
 
-    // mongoose.connection.on("connected", () => {
-    //     logger.info("Database connected successfully")
-    // })
+    mongoose.connection.on("connected", () => {
+        console.info("Database connected successfully")
+    })
 
-    // mongoose.connection.on("error", (error) => {
-    //     logger.error("An error occurred", error)
-    // })
+    mongoose.connection.on("error", (error) => {
+        console.error("An error occurred", error)
+    })
 };
 
 const agenda = new Agenda({
