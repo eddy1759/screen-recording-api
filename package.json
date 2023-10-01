@@ -24,6 +24,9 @@
     "openai": "^4.11.0",
     "winston": "^3.10.0"
   },
+  "engines": {
+    "node": ">=16 <20"
+  }
   "devDependencies": {
     "nodemon": "^3.0.1"
   }
