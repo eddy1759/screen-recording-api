@@ -3,14 +3,15 @@ const httpStatus = require('http-status');
 const cors = require('cors');
 const createError = require('http-errors');
 const { errorConverter, errorHandler } = require('./middleware/error');
-const { databaseConnection } = require('./config/connections');
 const ApiRouter = require('./routes/index');
+const { databaseConnection } = require('./config/connections');
+
 
 const app = express();
 
 // CORS middleware (before defining routes)
 
-databaseConnection();
+databaseConnection()
 
 app.use(cors());
 app.options('*', cors());

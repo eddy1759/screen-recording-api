@@ -4,10 +4,10 @@ const OpenAI = require("openai");
 const config = require("./config");
 const logger = require("./logger");
 
-const databaseConnection = async () => {
+const databaseConnection = () => {
     mongoose.set('strictQuery', false)
 
-    await mongoose.connect(config.DB_URL);
+    mongoose.connect(config.DB_URL);
 
     mongoose.connection.on("connected", () => {
         logger.info("Database connected successfully")

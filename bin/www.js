@@ -4,6 +4,7 @@ const http = require('http');
 const logger = require('../config/logger');
 var debug = require('debug')('screen-recording-api:server');
 
+
 const httpServer = http.createServer(app);
 
 /**
@@ -40,6 +41,8 @@ app.set('port', port);
 
 httpServer.on('error', onError);
 httpServer.on('listening', onListening);
+
+
 
 /**
  * Normalize a port into a number, string, or false.
