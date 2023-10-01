@@ -25,7 +25,7 @@
     "winston": "^3.10.0"
   },
   "engines": {
-    "node": ">=16 <20"
+    "node": ">=18 <19"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
