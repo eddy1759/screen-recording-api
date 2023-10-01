@@ -25,7 +25,7 @@ const agenda = new Agenda({
     },
 });
 
-const deepgramService = new DeepgramService(config.deepgramApiKey);
+const deepgramService = new Deepgram(config.deepgramApiKey);
 
 // const openai = new OpenAI({
 //     apiKey: config.OPENAI_KEY,
