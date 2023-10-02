@@ -12,9 +12,9 @@ const { processVideoJob } = require('../services/process');
 const startVideoStream = Asyncly(async (req, res) => {
     try {
         // const videoId = req.body.videoId;
-        if (typeof videoId === "undefined") {
-            throw new ApiError(httpStatus.BAD_REQUEST, 'Video ID is missing in the request');
-        }
+        // if (typeof videoId === "undefined") {
+        //     throw new ApiError(httpStatus.BAD_REQUEST, 'Video ID is missing in the request');
+        // }
 
         const fileName = generateUniqueId();
         const filePath = path.join(process.cwd(), 'videos');
@@ -25,17 +25,17 @@ const startVideoStream = Asyncly(async (req, res) => {
 
         // Listen for data events from the request stream
         req.on('data', (chunk) => {
-            videoStream.write(chunk); // Write the incoming data chunk to the video stream
+            videoStream.write(chunk);
+            console.log("video streaming..........") // Write the incoming data chunk to the video stream
         });
 
         // Listen for the end event when streaming is complete
         req.on('end', () => {
             videoStream.end(); // Close the video stream
-            console.log('Video stream ended');
+            console.log('Video streaming ended......');
         });
     } catch (error) {
         console.error(error);
-        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ status: false, error: 'Internal Server Error' });
     }
 });
 
