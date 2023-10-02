@@ -6,8 +6,6 @@ const config = require("./config");
 
 
 const databaseConnection = () => {
-    // mongoose.set('strictQuery', false)
-
     mongoose.connect(config.DB_URL);
 
     mongoose.connection.on("connected", () => {
@@ -27,15 +25,12 @@ const agenda = new Agenda({
 
 const deepgramService = new Deepgram(config.deepgramApiKey);
 
-// const openai = new OpenAI({
-//     apiKey: config.OPENAI_KEY,
-// });
+
 
 module.exports = {
     databaseConnection,
     agenda,
     deepgramService,
-    // openai,
 };
 
 
