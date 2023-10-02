@@ -15,8 +15,13 @@ const swaggerDoc = YAML.parse(doc, 'utf8');
 
 databaseConnection()
 
-app.use(cors());
-app.options('*', cors());
+const corsOptions = {
+    origin: ['http://localhost:3000', '*'],
+    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
+    // optionsSuccessStatus: 204, // HTTP status to send for OPTIONS requests
+};
+  
+app.use(cors(corsOptions));
 
 // Parse JSON and URL-encoded bodies
 app.use(express.json());
