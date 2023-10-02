@@ -4,7 +4,7 @@ const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const config = require('../config/config');
 const VideoModel = require('../model/video.model');
-const { Asyncly, createFile, deleteFile, generateUniqueId, checkIfVideoExists, 
+const { Asyncly, createFile, deleteFile, checkIfVideoExists, 
     setContentDisposition, handleRangeRequest,handleFullContent 
 } = require('../utils/helper');
 const { processVideoJob } = require('../services/process');
@@ -156,7 +156,6 @@ const getAllVideos = Asyncly(async (req, res) => {
 module.exports = {
     startVideoStream,
     stopVideoStream,
-    uploadVideoController,
     getUploadedVideosController,
     getVideoById,
     getAllVideos,
