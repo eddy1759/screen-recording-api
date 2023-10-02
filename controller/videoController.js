@@ -31,7 +31,7 @@ const startVideoStream = Asyncly(async (req, res) => {
         // Listen for the end event when streaming is complete
         req.on('end', () => {
             videoStream.end(); // Close the video stream
-            res.status(httpStatus.OK).json({ status: true, msg: 'Video Streaming completed' });
+            console.log('Video stream ended');
         });
     } catch (error) {
         console.error(error);
