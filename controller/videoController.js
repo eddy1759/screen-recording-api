@@ -8,6 +8,7 @@ const { Asyncly, createFile, deleteFile, generateUniqueId, checkIfVideoExists,
     setContentDisposition, handleRangeRequest,handleFullContent 
 } = require('../utils/helper');
 const { processVideoJob } = require('../services/process');
+const logger = require('../config/logger');
 
 const startVideoStream = Asyncly(async (req, res) => {
     try {
@@ -26,29 +27,31 @@ const startVideoStream = Asyncly(async (req, res) => {
         // Listen for data events from the request stream
         req.on('data', (chunk) => {
             videoStream.write(chunk);
-            console.log("video streaming..........") // Write the incoming data chunk to the video stream
+            logger.info("video streaming..........") // Write the incoming data chunk to the video stream
         });
 
         // Listen for the end event when streaming is complete
         req.on('end', () => {
             videoStream.end(); // Close the video stream
-            console.log('Video streaming ended......');
+            logger.info('Video streaming ended......');
             res.status(httpStatus.OK).json({ status: true, videoId: fileName.split('.')[0],
                 msg: 'Video Streaming started' })
         });
     } catch (error) {
-        console.error(error);
+        logger.error(error);
     }
 });
 
 const stopVideoStream = Asyncly(async (req, res) => {
-    const videoId = req?.params?.videoId;
+    const videoId = req.params.videoId;
     if (typeof videoId === "undefined") {
+        logger.info('Video id is required')
         throw new ApiError(httpStatus.BAD_REQUEST, 'Video id is required');
     }
 
     const videoExists = await checkIfVideoExists(videoId);
     if (!videoExists) {
+        logger.info('Video not found')
         res.status(httpStatus.NOT_FOUND).json({ status: false, msg: 'Video not found' });
     }
 
