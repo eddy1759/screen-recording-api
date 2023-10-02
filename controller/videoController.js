@@ -4,19 +4,19 @@ const httpStatus = require('http-status');
 const ApiError = require('../utils/ApiError');
 const config = require('../config/config');
 const VideoModel = require('../model/video.model');
-const { Asyncly, createFile, deleteFile, checkIfVideoExists, 
+const { Asyncly, createFile, deleteFile, generateUniqueId, checkIfVideoExists, 
     setContentDisposition, handleRangeRequest,handleFullContent 
 } = require('../utils/helper');
 const { processVideoJob } = require('../services/process');
 
 const startVideoStream = Asyncly(async (req, res) => {
     try {
-        const videoId = req.body.videoId;
+        // const videoId = req.body.videoId;
         if (typeof videoId === "undefined") {
             throw new ApiError(httpStatus.BAD_REQUEST, 'Video ID is missing in the request');
         }
 
-        const fileName = `${videoId}.webm`;
+        const fileName = generateUniqueId();
         const filePath = path.join(process.cwd(), 'videos');
         const videoPath = path.join(filePath, fileName);
 
