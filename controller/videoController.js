@@ -33,6 +33,8 @@ const startVideoStream = Asyncly(async (req, res) => {
         req.on('end', () => {
             videoStream.end(); // Close the video stream
             console.log('Video streaming ended......');
+            res.status(httpStatus.OK).json({ status: true, videoId: fileName.split('.')[0],
+                msg: 'Video Streaming started' })
         });
     } catch (error) {
         console.error(error);
@@ -59,8 +61,8 @@ const stopVideoStream = Asyncly(async (req, res) => {
     }
 
     await processVideoJob(videoId);
-
-    res.status(httpStatus.OK).json({ status: true, msg: 'Video Streaming stopped' });
+    console.log('Video processing started......')
+    // res.status(httpStatus.OK).json({ status: true, msg: 'Video Streaming stopped' });
 });
 
 
