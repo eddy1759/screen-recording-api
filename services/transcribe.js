@@ -38,7 +38,7 @@ async function transcribeAudio(filePath, videoId) {
 };
 
 async function ProcessScreenRecordingVideos(videoId) {
-  const input = path.join(__dirname, "..", "storage/videos", `${videoId}.webm`);
+  const input = path.join(__dirname, "..", "/videos", `${videoId}.webm`);
 
   if (!fs.existsSync(input)) {
     console.log("Input file does not exist", { input });
