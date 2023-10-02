@@ -9,29 +9,34 @@ const { Asyncly, createFile, deleteFile, generateUniqueId, checkIfVideoExists,
 } = require('../utils/helper');
 const { processVideoJob } = require('../services/process');
 
-const startVideoStream  = Asyncly(async (req, res) => {
-    const blobBuffer = req.files["blob"][0].buffer;
-    const videoId = req.body.videoId;
-    if (typeof blobBuffer === "undefined" || typeof videoId === "undefined") {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Request body is empty');
+const startVideoStream = Asyncly(async (req, res) => {
+    try {
+        const videoId = req.body.videoId;
+        if (typeof videoId === "undefined") {
+            throw new ApiError(httpStatus.BAD_REQUEST, 'Video ID is missing in the request');
+        }
+
+        const fileName = `${videoId}.webm`;
+        const filePath = path.join(process.cwd(), 'videos');
+        const videoPath = path.join(filePath, fileName);
+
+        // Create a writable stream to save the video data
+        const videoStream = fs.createWriteStream(videoPath);
+
+        // Listen for data events from the request stream
+        req.on('data', (chunk) => {
+            videoStream.write(chunk); // Write the incoming data chunk to the video stream
+        });
+
+        // Listen for the end event when streaming is complete
+        req.on('end', () => {
+            videoStream.end(); // Close the video stream
+            res.status(httpStatus.OK).json({ status: true, msg: 'Video Streaming completed' });
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(httpStatus.INTERNAL_SERVER_ERROR).json({ status: false, error: 'Internal Server Error' });
     }
-
-    const videoExists = await checkIfVideoExists(videoId);
-    if (!videoExists) {
-        await VideoModel.create({ videoId });
-    }
-
-    const fileName = `${videoId}.webm`;
-    const filePath = path.join(process.cwd(), 'videos');
-    const videoPath = path.join(filePath, fileName);
-
-    if (fs.existsSync(videoPath)) {
-        createFile(filePath, fileName, "");
-    }
-
-    const videoStream = fs.createWriteStream(videoPath);
-    videoStream.write(blobBuffer);
-    res.status(httpStatus.OK).json({ status: true, msg: 'Video Streaming in progress' });
 });
 
 const stopVideoStream = Asyncly(async (req, res) => {
@@ -59,58 +64,29 @@ const stopVideoStream = Asyncly(async (req, res) => {
 });
 
 
-const uploadVideoController = Asyncly(async (req, res) => {
-    if (!req.body) {
-        throw new ApiError(httpStatus.BAD_REQUEST, 'Request body is empty');
-    }
-    const videoFileName = await generateUniqueId();
-
-    const uploadDir = path.join(__dirname, '../public/video');
-
-    const savePath = path.join(uploadDir, videoFileName);
-
-    const writeStream = fs.createWriteStream(savePath);
-
-    req.on('data', (chunk) => {
-        
-        writeStream.write(chunk);
-    });
-
-    req.on('end', () => {
-        writeStream.end();
-
-        res.status(201).json({ 
-            status: true, 
-            id: videoFileName.split('.')[0],
-            msg: 'Video Uploaded Successful' });
-    });
-})
-
-
-
 const getUploadedVideosController = Asyncly(async (req, res) => {
-    const videoFilename = req.params.id;
+    const videoId = req.params.videoId;
  
-    if (!videoFilename) {
+    if (!videoId) {
         throw new ApiError(httpStatus.BAD_REQUEST, 'Video filename is required');
     }
-    const dirPath = path.join(__dirname, '../public/video');
+    const fileName = `${videoId}.webm`;
+    const filePath = path.join(process.cwd(), 'videos');
+    const videoPath = path.join(filePath, fileName);
 
-    const videoFilePath = path.join(dirPath, videoFilename);
-
-    if (!fs.existsSync(videoFilePath)) {
+    if (!fs.existsSync(videoPath)) {
         throw new ApiError(httpStatus.NOT_FOUND, 'Video not found');
     }
 
     // res.setHeader('Content-Type', 'video/mp4');
-    setContentDisposition(res, videoFilename);
+    setContentDisposition(res, fileName);
 
     const { range } = req.headers;
  
     if (range) {
-        handleRangeRequest(req, res, videoFilePath);
+        handleRangeRequest(req, res, videoPath);
     } else {
-        handleFullContent(req, res, videoFilePath);
+        handleFullContent(req, res, videoPath);
     }
 
     // fs.createReadStream(videoFilePath).pipe(res);
