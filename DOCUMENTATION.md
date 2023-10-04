@@ -1,14 +1,15 @@
 # API Documentation
 
 - Base URL: https://hng5.onrender.com
+- API DOC: https://hng5.onrender.com/api/doc/
 
 ### Authentication
 -No authentication required for the provided endpoints.
 
-### Upload Video
+### Stream Video Chunk
 
-    - Request:
-        Endpoint: https://hng5.onrender.com/api/recording
+    - Request: This Request start the video streaming in chunk and merge the chunk when streaming has ended
+        Endpoint: https://hng5.onrender.com/api/video/start
         Method: POST
         Headers: None
         Body:
@@ -23,14 +24,14 @@
             {
                 "status": true,
                 "id": "unique_video_id",
-                "msg": "Video Uploaded Successful"
+                "msg": "Video streamed Successful"
             }
 
 
 ### Stream Video
 
-    - Request:
-        Endpoint: https://hng5.onrender.com/api/recording/<id>
+    - Request: This request process the chunk video data when the streaming has ended
+        Endpoint: https://hng5.onrender.com/api/video/<id>
         Method: GET
         Headers: None
         Usage:
